@@ -35,3 +35,56 @@ instance Expr ExprT where
   add x y = Add x y
   mul :: ExprT -> ExprT -> ExprT
   mul x y = Mul x y
+
+-- Exercise 4
+
+instance Expr Integer where
+  lit :: Integer -> Integer
+  lit x = id x
+  add :: Integer -> Integer -> Integer
+  add x y = x + y
+  mul :: Integer -> Integer -> Integer
+  mul x y = x * y
+
+instance Expr Bool where
+  lit :: Integer -> Bool
+  lit x = x > 0
+  add :: Bool -> Bool -> Bool
+  add x y = x || y
+  mul :: Bool -> Bool -> Bool
+  mul x y = x && y
+
+newtype MinMax = MinMax Integer deriving (Ord, Eq, Show)
+
+instance Expr MinMax where
+  lit :: Integer -> MinMax
+  lit x = MinMax x
+  add :: MinMax -> MinMax -> MinMax
+  add x y = max x y
+  mul :: MinMax -> MinMax -> MinMax
+  mul x y = min x y
+
+--newtype Mod7 = Mod7 Integer deriving ( Eq, Show)
+
+--instance Expr Mod7 where
+--  lit :: Integer -> Mod7
+--  lit x = Mod7 x
+--  add :: Mod7 -> Mod7 -> Mod7
+--  add x y = mod (x + y) 7
+--  mul :: Mod7 -> Mod7 -> Mod7
+--  mul x y = mod (x * y) 7
+
+testExp :: Expr a => Maybe a
+testExp = parseExp lit add mul "(3 * -4) + 5"
+
+testInteger = testExp :: Maybe Integer
+testBool = testExp :: Maybe Bool
+testMM = testExp :: Maybe MinMax
+--testSat = testExp :: Maybe Mod7
+
+-- Exercise 5
+
+instance Expr Program where
+  lit :: Integer -> Program
+  add :: Program -> Program -> Program
+  mul :: Program -> Program -> Program
