@@ -1,3 +1,7 @@
+{-# LANGUAGE InstanceSigs #-}
+{-# LANGUAGE KindSignatures #-}
+{-# LANGUAGE GADTs #-}
+
 import ExprT
 import Parser
 import StackVM
@@ -28,6 +32,6 @@ instance Expr ExprT where
   lit :: Integer -> ExprT
   lit x = Lit x
   add :: ExprT -> ExprT -> ExprT
-  add x y = x + y
+  add x y = Add x y
   mul :: ExprT -> ExprT -> ExprT
-  mul x y = x * y
+  mul x y = Mul x y
