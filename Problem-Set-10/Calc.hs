@@ -1,6 +1,7 @@
 {-# LANGUAGE InstanceSigs #-}
 {-# LANGUAGE KindSignatures #-}
 {-# LANGUAGE GADTs #-}
+{-# LANGUAGE GeneralizedNewtypeDeriving #-}
 
 import ExprT
 import Parser
@@ -64,15 +65,17 @@ instance Expr MinMax where
   mul :: MinMax -> MinMax -> MinMax
   mul x y = min x y
 
---newtype Mod7 = Mod7 Integer deriving ( Eq, Show)
+newtype Mod7 = Mod7 Integer deriving (Num, Ord, Eq, Show)
 
---instance Expr Mod7 where
---  lit :: Integer -> Mod7
---  lit x = Mod7 x
---  add :: Mod7 -> Mod7 -> Mod7
---  add x y = mod (x + y) 7
---  mul :: Mod7 -> Mod7 -> Mod7
---  mul x y = mod (x * y) 7
+instance Expr Mod7 where
+  lit :: Integer -> Mod7
+  lit x
+    | (x < 7) && (x >= 0) = Mod7 x
+    | otherwise = Mod7 (mod x 7)
+  add :: Mod7 -> Mod7 -> Mod7
+  add (Mod7 x) (Mod7 y) = Mod7 (mod (x + y) 7)
+  mul :: Mod7 -> Mod7 -> Mod7
+  mul (Mod7 x) (Mod7 y) = Mod7 (mod (x * y) 7)
 
 testExp :: Expr a => Maybe a
 testExp = parseExp lit add mul "(3 * -4) + 5"
@@ -80,11 +83,4 @@ testExp = parseExp lit add mul "(3 * -4) + 5"
 testInteger = testExp :: Maybe Integer
 testBool = testExp :: Maybe Bool
 testMM = testExp :: Maybe MinMax
---testSat = testExp :: Maybe Mod7
-
--- Exercise 5
-
-instance Expr Program where
-  lit :: Integer -> Program
-  add :: Program -> Program -> Program
-  mul :: Program -> Program -> Program
+testSat = testExp :: Maybe Mod7
