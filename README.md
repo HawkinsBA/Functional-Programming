@@ -1,2 +1,2 @@
 # Functional-Programming
-Assignments from CSCI 365 at Hendrix Colelge, mostly written in Haskell and Idris.
+Assignments from CSCI 365 at Hendrix College, mostly written in Haskell and Idris.
