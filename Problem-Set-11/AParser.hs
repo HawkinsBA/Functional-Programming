@@ -1,4 +1,5 @@
 {-# LANGUAGE GADTs #-}
+{-# LANGUAGE InstanceSigs #-}
 
 module AParser (Parser, runParser, satisfy, char, posInt) where
 
@@ -9,17 +10,17 @@ import           Data.Char
 -- succeeds, it returns the parsed value along with the remainder of
 -- the input.
 newtype Parser a where
-  Parser :: (String -> Maybe (a, String)) -> Parser a
+  P :: (String -> Maybe (a, String)) -> Parser a
 
 runParser :: Parser a -> String -> Maybe (a, String)
-runParser (Parser f) = f
+runParser (P f) = f
 
 -- For example, 'satisfy' takes a predicate on Char, and constructs a
 -- parser which succeeds only if it sees a Char that satisfies the
 -- predicate (which it then returns).  If it encounters a Char that
 -- does not satisfy the predicate (or an empty input), it fails.
 satisfy :: (Char -> Bool) -> Parser Char
-satisfy p = Parser f
+satisfy p = P f
   where
     f [] = Nothing    -- fail on an empty input
     f (x:xs)          -- check if x satisfies the predicate
@@ -47,7 +48,7 @@ Just ('x',"yz")
 -- For convenience, I've also provided a parser for positive
 -- integers.
 posInt :: Parser Integer
-posInt = Parser f
+posInt = P f
   where
     f xs
       | null ns   = Nothing
@@ -57,3 +58,9 @@ posInt = Parser f
 ------------------------------------------------------------
 -- Your code goes below here
 ------------------------------------------------------------
+
+instance Functor Parser where
+  fmap :: (a -> b) -> Parser a -> Parser b
+  fmap g (P t1) = P (\s -> case t1 s of
+    Nothing -> Nothing
+    Just (a, s2) -> Just (g a, s2))
