@@ -84,4 +84,11 @@ instance Applicative Parser where
 -- Exercise 3
 
 abParser :: Parser (Char, Char)
-abParser = fmap _
+abParser = (,) <$> char 'a' <*> char 'b'
+
+abParser_ :: Parser ()
+abParser_ = pure () <$> abParser
+
+-- Need a way to account for the space in "12 34"
+intPair :: Parser (Integer, Integer)
+intPair = (,) <$> posInt <*> posInt
