@@ -1,5 +1,7 @@
+{-# LANGUAGE GeneralizedNewtypeDeriving #-}
 {-# LANGUAGE GADTs #-}
 {-# LANGUAGE InstanceSigs #-}
+{-# LANGUAGE KindSignatures #-}
 
 module AParser (Parser, runParser, satisfy, char, posInt) where
 
@@ -10,17 +12,17 @@ import           Data.Char
 -- succeeds, it returns the parsed value along with the remainder of
 -- the input.
 newtype Parser a where
-  P :: (String -> Maybe (a, String)) -> Parser a
+  Parser :: (String -> Maybe (a, String)) -> Parser a
 
 runParser :: Parser a -> String -> Maybe (a, String)
-runParser (P f) = f
+runParser (Parser f) = f
 
 -- For example, 'satisfy' takes a predicate on Char, and constructs a
 -- parser which succeeds only if it sees a Char that satisfies the
 -- predicate (which it then returns).  If it encounters a Char that
 -- does not satisfy the predicate (or an empty input), it fails.
 satisfy :: (Char -> Bool) -> Parser Char
-satisfy p = P f
+satisfy p = Parser f
   where
     f [] = Nothing    -- fail on an empty input
     f (x:xs)          -- check if x satisfies the predicate
@@ -48,7 +50,7 @@ Just ('x',"yz")
 -- For convenience, I've also provided a parser for positive
 -- integers.
 posInt :: Parser Integer
-posInt = P f
+posInt = Parser f
   where
     f xs
       | null ns   = Nothing
@@ -59,8 +61,27 @@ posInt = P f
 -- Your code goes below here
 ------------------------------------------------------------
 
+-- Exercise 1
+
 instance Functor Parser where
   fmap :: (a -> b) -> Parser a -> Parser b
-  fmap g (P t1) = P (\s -> case t1 s of
+  fmap g (Parser f) = Parser (\s1 -> case f s1 of
     Nothing -> Nothing
     Just (a, s2) -> Just (g a, s2))
+
+-- Exercise 2
+
+instance Applicative Parser where
+  pure :: a -> Parser a
+  pure a = Parser (\s -> Just (a, s))
+  (<*>) :: Parser (a -> b) -> Parser a -> Parser b
+  (Parser p1) <*> (Parser p2) = Parser (\s1 -> case p1 s1 of
+    Nothing -> Nothing
+    Just (f, s2) -> case p2 s2 of
+      Nothing -> Nothing
+      Just (b, s3) -> Just (f b, s3))
+
+-- Exercise 3
+
+abParser :: Parser (Char, Char)
+abParser = fmap _
