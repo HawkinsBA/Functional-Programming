@@ -6,6 +6,7 @@
 module AParser (Parser, runParser, satisfy, char, posInt) where
 
 import           Data.Char
+import           Control.Applicative
 
 -- A parser for a value of type a is a function which takes a String
 -- represnting the input to be parsed, and succeeds or fails; if it
@@ -89,7 +90,10 @@ abParser = (,) <$> char 'a' <*> char 'b'
 abParser_ :: Parser ()
 abParser_ = pure () <$> abParser
 
--- Need a way to account for the space in "12 34"
--- String -> ([Integer], String)
 intPair :: Parser [Integer]
 intPair = (\n1 n2 -> [n1, n2]) <$> (posInt) <*> ((char ' ') *> posInt)
+
+instance Alternative Parser where
+  empty :: Parser a
+  empty = Parser (\_ -> Nothing)
+  -- Need to implement <|>
