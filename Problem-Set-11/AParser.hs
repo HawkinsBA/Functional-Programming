@@ -96,4 +96,4 @@ intPair = (\n1 n2 -> [n1, n2]) <$> (posInt) <*> ((char ' ') *> posInt)
 instance Alternative Parser where
   empty :: Parser a
   empty = Parser (\_ -> Nothing)
-  -- Need to implement <|>
+  (Parser p1) <|> (Parser p2) = _
