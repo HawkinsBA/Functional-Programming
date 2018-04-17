@@ -90,5 +90,6 @@ abParser_ :: Parser ()
 abParser_ = pure () <$> abParser
 
 -- Need a way to account for the space in "12 34"
-intPair :: Parser (Integer, Integer)
-intPair = (,) <$> posInt <*> posInt
+-- String -> ([Integer], String)
+intPair :: Parser [Integer]
+intPair = (\n1 n2 -> [n1, n2]) <$> (posInt) <*> ((char ' ') *> posInt)
