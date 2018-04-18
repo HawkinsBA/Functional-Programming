@@ -93,6 +93,8 @@ abParser_ = pure () <$> abParser
 intPair :: Parser [Integer]
 intPair = (\n1 n2 -> [n1, n2]) <$> (posInt) <*> ((char ' ') *> posInt)
 
+-- Exercise 4
+
 instance Alternative Parser where
   empty :: Parser a
   empty = Parser (\_ -> Nothing)
