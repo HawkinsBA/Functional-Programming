@@ -52,4 +52,4 @@ parseAtom :: Parser Atom
 parseAtom = N <$> posInt <|> I <$> ident
 
 parseSExpr :: Parser SExpr
-parseSExpr = spaces *> (A <$> parseAtom <|> char '(' <*> oneOrMore parseSExpr <*> char ')') <* spaces
+parseSExpr = spaces *> ((A <$> parseAtom) <* spaces <|> spaces *> (char '(' *> (Comb <$> oneOrMore parseSExpr) <* char ')')) <* spaces
