@@ -47,3 +47,9 @@ ident :: Parser String
 ident = (++) <$> oneOrMore (satisfy isAlpha) <*> zeroOrMore (satisfy isAlphaNum)
 
 -- Exercise 8
+
+parseAtom :: Parser Atom
+parseAtom = N <$> posInt <|> I <$> ident
+
+parseSExpr :: Parser SExpr
+parseSExpr = spaces *> (A <$> parseAtom <|> char '(' <*> oneOrMore parseSExpr <*> char ')') <* spaces
