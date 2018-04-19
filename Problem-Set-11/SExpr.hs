@@ -31,10 +31,17 @@ data SExpr where
 ------------------------------------------------------------
 
 -- Exercise 6
+
 zeroOrMore :: Parser a -> Parser [a]
-zeroOrMore p = (case oneOrMore p of
-  Nothing -> []
-  Just (a, s) -> _)
+zeroOrMore p = oneOrMore p <|> pure []
 
 oneOrMore :: Parser a -> Parser [a]
 oneOrMore p = (:) <$> p <*> zeroOrMore p
+
+-- Exercise 7
+
+spaces :: Parser String
+spaces = zeroOrMore (satisfy isSpace)
+
+ident :: Parser String
+ident = oneOrMore (satisfy isAlpha) <*> zeroOrMore (satisfy isAlphaNum)
