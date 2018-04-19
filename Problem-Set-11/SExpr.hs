@@ -44,4 +44,6 @@ spaces :: Parser String
 spaces = zeroOrMore (satisfy isSpace)
 
 ident :: Parser String
-ident = oneOrMore (satisfy isAlpha) <*> zeroOrMore (satisfy isAlphaNum)
+ident = (++) <$> oneOrMore (satisfy isAlpha) <*> zeroOrMore (satisfy isAlphaNum)
+
+-- Exercise 8
