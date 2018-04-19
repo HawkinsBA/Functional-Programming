@@ -1,6 +1,13 @@
+{-# LANGUAGE GeneralizedNewtypeDeriving #-}
+{-# LANGUAGE GADTs #-}
+{-# LANGUAGE InstanceSigs #-}
+{-# LANGUAGE KindSignatures #-}
+
 module SExpr where
 
 import           AParser
+import           Data.Char
+import           Control.Applicative
 
 -- An "identifier" is represented as just a String; however, only
 -- those Strings consisting of a letter followed by any number of
@@ -23,3 +30,11 @@ data SExpr where
 -- Your code goes below here
 ------------------------------------------------------------
 
+-- Exercise 6
+zeroOrMore :: Parser a -> Parser [a]
+zeroOrMore p = (case oneOrMore p of
+  Nothing -> []
+  Just (a, s) -> _)
+
+oneOrMore :: Parser a -> Parser [a]
+oneOrMore p = (:) <$> p <*> zeroOrMore p

@@ -102,3 +102,8 @@ instance Alternative Parser where
   (Parser p1) <|> (Parser p2) = Parser (\s -> case p1 s of
     Just (f, s2) -> Just (f, s2)
     Nothing -> p2 s)
+
+-- Exercise 5
+
+intOrUppercase :: Parser ()
+intOrUppercase = (\i -> ()) <$> posInt <|> (\i -> ()) <$> (satisfy isUpper)
