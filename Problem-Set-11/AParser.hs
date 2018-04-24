@@ -107,3 +107,6 @@ instance Alternative Parser where
 
 intOrUppercase :: Parser ()
 intOrUppercase = (\i -> ()) <$> posInt <|> (\i -> ()) <$> (satisfy isUpper)
+
+quizParser :: Parser Integer
+quizParser = char 'x' *> posInt
