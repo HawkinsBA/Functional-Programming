@@ -1,0 +1,3 @@
+data Map k a where
+  Empty :: Map k a
+  Map :: k -> a -> Map k a -> Map k a -> Map k a
