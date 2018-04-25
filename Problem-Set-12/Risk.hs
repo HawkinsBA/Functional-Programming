@@ -18,7 +18,6 @@ instance Random DieValue where
 die :: Rand StdGen DieValue
 die = getRandom
 
-------------------------------------------------------------
 -- Risk
 
 type Army = Int
@@ -26,5 +25,8 @@ type Army = Int
 data Battlefield = Battlefield { attackers :: Army, defenders :: Army }
 
 -- Exercise 2
+
+atkDice :: Int -> Rand StdGen [Int]
+atkDice n = replicateM die n
 
 battle :: Battlefield -> Rand StdGen Battlefield
