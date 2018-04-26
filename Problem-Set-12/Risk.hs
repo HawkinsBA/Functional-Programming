@@ -40,3 +40,20 @@ battle bf = do
       atkLoss  = length (filter (\x -> snd x > fst x) adPairs)
       defLoss  = length (filter (\x -> fst x > snd x) adPairs)
   return (Battlefield ((attackers bf) - atkLoss) ((defenders bf) - defLoss))
+
+-- Exercise 3
+
+invade :: Battlefield -> Rand StdGen Battlefield
+invade bf = do
+  postBattle <- battle bf
+  if attackers postBattle > 1 && defenders postBattle > 0
+    then invade postBattle
+    else return postBattle
+
+-- Exercise 4
+
+successProb :: Battlefield -> Rand StdGen Double
+successProb bf = do
+  results <- replicateM 1000 (invade bf)
+  let victories = foldr (\bf acc -> if defenders bf == 0 then acc + 1 else acc + 0) 0 results
+  return ((fromIntegral victories) / (fromIntegral 1000))
